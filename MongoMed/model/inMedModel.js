@@ -6,9 +6,9 @@ var inMedSchema = new Schema({
     mednum   	: String,
     inPrice   	: String,
     inCount    	: String,
-    inDate    	: { type: Date, default: Date.now },
+    inDate    	: { type: Date, default: Date.now   },
     provider    : String,
-    flag     : { type: Number, default: 1 }
+    flag     	: { type: Number, default: 1 }
 });
 
 var inMedModel = mongoose.model('in', inMedSchema);

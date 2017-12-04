@@ -1,7 +1,10 @@
 <template>
 	<div class="inMed">
-		<button @click="show = ! show">进药</button>
+		<button @click="show = ! show" class="createMed">进药</button>
 		<ul v-show="show" class="inmed">
+			<li>
+				<h3>进药记录</h3>
+			</li>
 			<li>
 				<span>单据号</span><input type="text" name="">
 			</li>
@@ -15,7 +18,7 @@
 				<span>采购数量</span><input type="text" name="" v-model="inCount">
 			</li>
 			<li>
-				<span>采购日期</span><input type="text" name="">
+				<span>采购日期</span><input type="text" name="" v-model="inDate">
 			</li>
 			<li>
 				<span>供应商</span><input type="text" name="" v-model="provider">
@@ -59,7 +62,8 @@ export default {
 		inPrice:"",
 		inCount:"",
 		provider:"",
-		data:null
+		data:null,
+		inDate:new Date()
     }
   },
   methods:{
@@ -86,6 +90,7 @@ export default {
   },
   mounted(){
   	this.getInMed();
+  	console.log(new Date());
   }
 }	
 </script>
@@ -108,7 +113,7 @@ tr td{
 }
 .inmed{
 	width: 400px;
-	height: 350px;
+	height: 395px;
 	background:#ccc;
 	display: block;
 	position: fixed;
@@ -119,18 +124,18 @@ tr td{
 	list-style: none;
 	z-index: 666;
 }
-.ceng{
-	position:fixed;
-	display: none;
-	top: 0;
-	left: 0;
-	width:100%;
-	height: 100%;
-	background:rgba(0,0,0,.6);
-}
+
 li{
 	width: 100%;
 	height: 50px;
+}
+li:nth-of-type(1){
+	width: 100%;
+	height: 45px;
+}
+li h3{
+	line-height: 45px;
+	text-align: center;
 }
 li span{
 	display: block;
@@ -153,5 +158,13 @@ li>button{
 	background: deepskyblue;
 	border-radius: 5px;
 	margin: 0 auto;
+}
+.createMed{
+	width: 50px;
+	height: 50px;
+	display: block;
+	position: fixed;
+	top: 100px;
+	right: 10px;
 }
 </style>
