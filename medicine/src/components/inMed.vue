@@ -1,6 +1,7 @@
 <template>
 	<div class="inMed">
 		<button @click="show = ! show" class="createMed">进药</button>
+		<span v-show="show" @click="show = !show"></span>
 		<ul v-show="show" class="inmed">
 			<li>
 				<h3>进药记录</h3>
@@ -18,13 +19,14 @@
 				<span>采购数量</span><input type="text" name="" v-model="inCount">
 			</li>
 			<li>
-				<span>采购日期</span><input type="text" name="" v-model="inDate">
+				<span>采购日期</span><p id="pbut">{{getTime}}</p>
 			</li>
 			<li>
 				<span>供应商</span><input type="text" name="" v-model="provider">
 			</li>
 			<li>
 				<button @click="create">保存</button>
+				<button @click="show = !show">取消</button>
 			</li>
 		</ul>
 		
@@ -39,7 +41,7 @@
 					<td>供应商</td>
 				</tr>
 				<tr v-if="data" v-for="(item, index) in data">
-					<td>1</td>
+					<td>{{index+1}}</td>
 					<td>{{item.mednum}}</td>
 					<td>{{item.inPrice}}</td>
 					<td>{{item.inCount}}</td>
@@ -63,42 +65,65 @@ export default {
 		inCount:"",
 		provider:"",
 		data:null,
-		inDate:new Date()
+		inDate:""
     }
+  },
+  computed:{
+	getTime:function(){
+		var date = new Date();
+		var time = date.getTime() + 8*60*1000*60;
+		var currTime = new Date(time);
+		return currTime;
+	}
   },
   methods:{
 
 	create:function(){
+		var that = this;
 		this.$http.post('/inMed/create',{
-			show:this.show,
-			showceng:this.showceng,
 			mednum:this.mednum,
 			inPrice:this.inPrice,
 			inCount:this.inCount,
-			provider:this.provider
+			provider:this.provider,
+			inDate: document.getElementById('pbut').innerHTML
 		}).then((res)=>{
 			console.log(res.data);
+			if (res.data == "商品保存成功") {
+				console.log("ok");
+				that.$http.post('/haveMed/create',{
+					mednum:that.mednum,
+					medname:"999感冒灵",
+					inPrice:that.inPrice,
+					inCount:that.inCount,
+					provider:that.provider,
+					guige:"100"
+				}).then((res)=>{
+					console.log(res);
+					location.reload(true);
+				})
+				
+			}else{
+				alert(res.data)
+			}
 		})
 	},
 	getInMed:function(){
 		var that= this;
 		this.$http.get('/inMed/getIn').then((res)=>{
-			console.log(res);
+			// console.log(res);
 			that.data = res.data
 		})
 	}
   },
   mounted(){
   	this.getInMed();
-  	console.log(new Date());
   }
 }	
 </script>
-<style>
+<style scoped>
 table{
 	width: 900px;
 	height: auto;
-	background:hotpink;
 	margin: 20px auto;
 }
 tr{
@@ -128,6 +153,8 @@ tr td{
 li{
 	width: 100%;
 	height: 50px;
+	text-align: center;
+	line-height: 50px;
 }
 li:nth-of-type(1){
 	width: 100%;
@@ -139,7 +166,7 @@ li h3{
 }
 li span{
 	display: block;
-	width: 100px;
+	width: 120px;
 	height: 50px;
 	text-align: right;
 	line-height: 50px;
@@ -150,14 +177,16 @@ li input{
 	margin-left: 20px;
 }
 li>button{
-	display: block;
+	display: inline-block;
 	width: 50px;
 	height: 30px;
 	outline: none;
 	border:1px solid red;
 	background: deepskyblue;
 	border-radius: 5px;
-	margin: 0 auto;
+	margin-right: 10px;
+	
+
 }
 .createMed{
 	width: 50px;
@@ -166,5 +195,15 @@ li>button{
 	position: fixed;
 	top: 100px;
 	right: 10px;
+}
+.inMed>span{
+	content: "";
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.5);
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 666;
 }
 </style>

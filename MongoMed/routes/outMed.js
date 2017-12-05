@@ -6,7 +6,7 @@ var outMedModel = require("../model/outMedModel");
 /* GET home page. */
 
 //售药时,先查询库存中的药
-router.get('/getOut', function(req, res, next) {
+router.get('/getHave', function(req, res, next) {
     haveMedModel.find({ flag: 1}, (err, docs) => {
         if (err || docs.length == 0) {
 	      res.send(err);
@@ -15,32 +15,28 @@ router.get('/getOut', function(req, res, next) {
 	    }
     })
 });
-//售药就是更改havecount
-router.post('/change', function(req, res, next) {
-    haveModel.update({ _id: req.body.id }, {
-            haveCount: req.body.haveCount
-        },
-        (err, b) => {
-            var result = {
-                code: 1
-            }
-            if (err) {
-                result.code = -109;
-                result.message = "更改失败!";
-            }
-            res.send(JSON.stringify(result));
-        })
 
+router.get('/getOut', function(req, res, next) {
+    outMedModel.find({ flag: 1}, (err, docs) => {
+        if (err || docs.length == 0) {
+          res.send(err);
+        } else {
+          res.send(docs);
+        }
+    })
 });
+//售药就是更改havecount
+
 
 router.post('/create', function(req, res, next) {
     var outMedNew = new outMedModel();
     // outMedNew.num=req.body.num;
-    outMedNew.buyernum=req.body.outMedNew;
-    outMedNew.mednum=req.body.outMedNew;
-    outMedNew.outPrice=req.body.outMedNew;
-    outMedNew.outCount=req.body.outMedNew;
-    outMedNew.outDate=req.body.outMedNew;
+    // outMedNew.buyernum=req.body.outMedNew;
+    outMedNew.mednum=req.body.mednum;
+    outMedNew.outPrice=req.body.outPrice;
+    outMedNew.outCount=req.body.outCount;
+    outMedNew.outDate=req.body.outDate;
+    // outMedNew.outDate=req.body.outMedNew;
     outMedNew.save((err) => {
         if (err) {
             res.send("售药信息保存失败");

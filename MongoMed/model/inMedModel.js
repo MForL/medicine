@@ -6,7 +6,8 @@ var inMedSchema = new Schema({
     mednum   	: String,
     inPrice   	: String,
     inCount    	: String,
-    inDate    	: { type: Date, default: Date.now   },
+    inDate 		: String,
+    Date    	: { type: Date, default: Date.now   },
     provider    : String,
     flag     	: { type: Number, default: 1 }
 });
