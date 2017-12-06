@@ -65,15 +65,21 @@ export default {
 		inCount:"",
 		provider:"",
 		data:null,
-		inDate:""
+		inDate:null
     }
   },
   computed:{
 	getTime:function(){
 		var date = new Date();
-		var time = date.getTime() + 8*60*1000*60;
+		var time = date.getTime() ;
 		var currTime = new Date(time);
-		return currTime;
+		var year = currTime.getFullYear();
+		var month = currTime.getMonth() + 1;
+		var date = currTime.getDate();
+		var hour = currTime.getHours();
+		var minutes = currTime.getMinutes();
+		var seconds = currTime.getSeconds();
+		return `${year}年${month}月${date}日 ${hour}:${minutes}:${seconds}`;
 	}
   },
   methods:{
@@ -129,6 +135,9 @@ table{
 tr{
 	height: 40px;
 	width: 100%;
+}
+tr:nth-of-type(1){
+	background: #cfc;
 }
 tr td{
 	width: 150px;

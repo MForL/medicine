@@ -64,9 +64,15 @@ export default {
   computed:{
 	getTime:function(){
 		var date = new Date();
-		var time = date.getTime() + 8*60*1000*60;
+		var time = date.getTime() ;
 		var currTime = new Date(time);
-		return currTime;
+		var year = currTime.getFullYear();
+		var month = currTime.getMonth() + 1;
+		var date = currTime.getDate();
+		var hour = currTime.getHours();
+		var minutes = currTime.getMinutes();
+		var seconds = currTime.getSeconds();
+		return `${year}年${month}月${date}日 ${hour}:${minutes}:${seconds}`;
 	}
   },
   methods:{
@@ -120,18 +126,22 @@ export default {
 table{
 	width: 900px;
 	height: auto;
-	background:hotpink;
+	border-collapse:collapse;
 	margin: 20px auto;
 }
 tr{
 	height: 40px;
 	width: 100%;
 }
+tr:nth-of-type(1){
+	background: #f12572;
+}
 tr td{
 	width: 150px;
 	height: 40px;
 	text-align: center;
 	line-height: 40px;
+	border: 1px solid #ccc;
 }
 .outmed{
 	width: 400px;

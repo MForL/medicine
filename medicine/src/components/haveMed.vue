@@ -59,12 +59,15 @@ export default {
 table{
 	width: 900px;
 	height: auto;
-	background:hotpink;
+	
 	margin: 20px auto;
 }
 tr{
 	height: 40px;
 	width: 100%;
+}
+tr:nth-of-type(1){
+	background: deepskyblue;
 }
 tr td{
 	width: 150px;
