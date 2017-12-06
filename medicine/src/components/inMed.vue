@@ -7,10 +7,10 @@
 				<h3>进药记录</h3>
 			</li>
 			<li>
-				<span>单据号</span><input type="text" name="">
+				<span>药品编码</span><input type="text" name="" v-model="mednum" @blur="change">
 			</li>
 			<li>
-				<span>药品编码</span><input type="text" name="" v-model="mednum">
+				<span>药品名称</span><input type="text" name="" v-model="medname">
 			</li>
 			<li>
 				<span>采购价</span><input type="text" name="" v-model="inPrice">
@@ -23,6 +23,15 @@
 			</li>
 			<li>
 				<span>供应商</span><input type="text" name="" v-model="provider">
+			</li>
+			<li>
+				<span>生产厂家</span><input type="text" name="" v-model="company">
+			</li>
+			<li>
+				<span>规格</span><input type="text" name="" v-model="guige">
+			</li>
+			<li>
+				<span>零售价</span><input type="text" name="" v-model="havePrice">
 			</li>
 			<li>
 				<button @click="create">保存</button>
@@ -65,7 +74,11 @@ export default {
 		inCount:"",
 		provider:"",
 		data:null,
-		inDate:null
+		inDate:null,
+		guige:"",
+		havePrice:"",
+		company:"",
+		medname:""
     }
   },
   computed:{
@@ -83,36 +96,75 @@ export default {
 	}
   },
   methods:{
-
-	create:function(){
+  	create:function(){
 		var that = this;
-		this.$http.post('/inMed/create',{
+		var data = {
 			mednum:this.mednum,
+			medname:this.medname,
+			provider:this.provider,
+			guige:this.guige,
 			inPrice:this.inPrice,
 			inCount:this.inCount,
-			provider:this.provider,
+			company:this.company,
 			inDate: document.getElementById('pbut').innerHTML
-		}).then((res)=>{
-			console.log(res.data);
-			if (res.data == "商品保存成功") {
-				console.log("ok");
-				that.$http.post('/haveMed/create',{
-					mednum:that.mednum,
-					medname:"999感冒灵",
-					inPrice:that.inPrice,
-					inCount:that.inCount,
-					provider:that.provider,
-					guige:"100"
-				}).then((res)=>{
-					console.log(res);
+		}
+		this.$http.post('/haveMed/create',data).then((res)=>{
+			console.log(res);
+		}).then(
+			this.$http.post('/inMed/create',data).then((res)=>{
+				if(res.data == "商品保存成功"){
 					location.reload(true);
-				})
-				
-			}else{
-				alert(res.data)
+				}else{
+					alert(res.data);
+				}
+			})
+		)
+	},
+	change:function(){
+		console.log(this.mednum);
+		var that = this;
+		this.$http.post('/haveMed/findOnly',{mednum:this.mednum}).then((res)=>{
+			if(res.data){
+				console.log(res)
+				that.medname = res.data[0].medname;
+				that.company = res.data[0].company;
+				that.guige = res.data[0].guige;
+				that.guige = res.data[0].guige;
+				that.havePrice = res.data[0].havePrice;
 			}
 		})
 	},
+
+	// create:function(){
+	// 	var that = this;
+	// 	this.$http.post('/inMed/create',{
+	// 		mednum:this.mednum,
+	// 		inPrice:this.inPrice,
+	// 		inCount:this.inCount,
+	// 		provider:this.provider,
+	// 		inDate: document.getElementById('pbut').innerHTML
+	// 	}).then((res)=>{
+	// 		console.log(res.data);
+	// 		if (res.data == "商品保存成功") {
+	// 			console.log("ok");
+	// 			that.$http.post('/haveMed/create',{
+	// 				mednum:that.mednum,
+	// 				medname:"999感冒灵",
+	// 				inPrice:that.inPrice,
+	// 				inCount:that.inCount,
+	// 				provider:that.provider,
+	// 				guige:"100"
+	// 			}).then((res)=>{
+	// 				console.log(res);
+	// 				location.reload(true);
+	// 			})
+				
+	// 		}else{
+	// 			alert(res.data)
+	// 		}
+	// 	})
+	// },
+	
 	getInMed:function(){
 		var that= this;
 		this.$http.get('/inMed/getIn').then((res)=>{
@@ -147,7 +199,7 @@ tr td{
 }
 .inmed{
 	width: 400px;
-	height: 395px;
+	height: 445px;
 	background:#ccc;
 	display: block;
 	position: fixed;
@@ -161,9 +213,9 @@ tr td{
 
 li{
 	width: 100%;
-	height: 50px;
+	height: 40px;
 	text-align: center;
-	line-height: 50px;
+	line-height: 40px;
 }
 li:nth-of-type(1){
 	width: 100%;
@@ -176,18 +228,18 @@ li h3{
 li span{
 	display: block;
 	width: 120px;
-	height: 50px;
+	height: 40px;
 	text-align: right;
-	line-height: 50px;
+	line-height: 40px;
 	float: left;
 }
 li input{
-	margin-top: 16px;
+	margin-top: 13px;
 	margin-left: 20px;
 }
 li>button{
 	display: inline-block;
-	width: 50px;
+	width: 40px;
 	height: 30px;
 	outline: none;
 	border:1px solid red;
@@ -198,8 +250,8 @@ li>button{
 
 }
 .createMed{
-	width: 50px;
-	height: 50px;
+	width: 40px;
+	height: 40px;
 	display: block;
 	position: fixed;
 	top: 100px;

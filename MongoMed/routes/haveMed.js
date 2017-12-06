@@ -13,6 +13,25 @@ router.get('/getHave', function(req, res, next) {
     })
 });
 
+router.post('/create', function(req, res, next) {
+    var haveMedNew = new haveMedModel();
+    haveMedNew.mednum=req.body.mednum;
+    haveMedNew.medname=req.body.medname;
+    haveMedNew.havePrice=req.body.inPrice;
+    haveMedNew.haveCount=req.body.inCount;
+    haveMedNew.guige=req.body.guige;
+    haveMedNew.company=req.body.company;
+    haveMedNew.save((err) => {
+        if (err) {
+            res.send("商品入库失败");
+        } else {
+            res.send("商品入库成功");
+        }
+    });
+});
+
+
+
 router.post('/findOnly', function(req, res, next) {
     haveMedModel.find({ mednum: req.body.mednum }, (err, docs) => {
       console.log("进入 findOnly")
