@@ -3,6 +3,7 @@ var router = express.Router();
 var haveMedModel = require("../model/haveMedModel");
 
 /* GET home page. */
+
 router.get('/getHave', function(req, res, next) {
     haveMedModel.find({ flag: 1}, (err, docs) => {
         if (err || docs.length == 0) {
@@ -33,6 +34,17 @@ router.post('/create', function(req, res, next) {
 
 
 router.post('/findOnly', function(req, res, next) {
+    haveMedModel.find({ mednum: req.body.mednum,havePrice:req.body.outPrice }, (err, docs) => {
+      console.log("进入 findOnly")
+        if (err || docs.length == 0) {
+          res.send(err);
+        } else {
+          res.send(docs);
+        }
+    })
+});
+
+router.post('/findmednum', function(req, res, next) {
     haveMedModel.find({ mednum: req.body.mednum }, (err, docs) => {
       console.log("进入 findOnly")
         if (err || docs.length == 0) {
@@ -61,7 +73,7 @@ router.post('/findOnly', function(req, res, next) {
 
 
 router.post('/change', function(req, res, next) {
-    haveMedModel.find({ mednum: req.body.mednum },(err, docs)=>{
+    haveMedModel.find({ mednum: req.body.mednum, havePrice:req.body.outPrice },(err, docs)=>{
       // console.log(docs);
       if(err || docs.length == 0){
           res.send("无数据");

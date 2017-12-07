@@ -1,8 +1,43 @@
 <template>
 	<div class="inMed">
-		<button @click="show = ! show" class="createMed">进药</button>
+		<el-button type="primary" @click="show = ! show" class="createMed">进药</el-button>
 		<span v-show="show" @click="show = !show"></span>
-		<ul v-show="show" class="inmed">
+		<el-form :label-position="labelPosition" label-width="120px" v-show="show" class="outmed">
+			<h3>进药记录</h3>
+		  <el-form-item label="药品编码">
+		    <el-input v-model="mednum" autofocus @blur="change"></el-input>
+		  </el-form-item>
+		  <el-form-item label="药品名称">
+		    <el-input v-model="medname"></el-input>
+		  </el-form-item>
+		  <el-form-item label="采购价">
+		    <el-input v-model="inPrice"></el-input>
+		  </el-form-item>
+		  <el-form-item label="采购数量">
+		    <el-input v-model="inCount"></el-input>
+		  </el-form-item>
+		  <el-form-item label="采购日期">
+		    <div id="pbut">{{getTime}}</div>
+		  </el-form-item>
+		  <el-form-item label="供应商">
+		    <el-input v-model="provider"></el-input>
+		  </el-form-item>
+		  <el-form-item label="生产厂家">
+		    <el-input v-model="company"></el-input>
+		  </el-form-item>
+		  <el-form-item label="规格">
+		    <el-input v-model="guige"></el-input>
+		  </el-form-item>
+		  <el-form-item label="零售价">
+		    <el-input v-model="havePrice"></el-input>
+		  </el-form-item>
+		  <el-form-item>
+		    <el-button type="primary" @click="create" class="save">保存</el-button>
+		  <el-button type="primary" @click="show = ! show" class="quxiao">取消</el-button>
+		  </el-form-item>
+		  
+		</el-form>
+		<!-- <ul v-show="show" class="inmed">
 			<li>
 				<h3>进药记录</h3>
 			</li>
@@ -37,29 +72,43 @@
 				<button @click="create">保存</button>
 				<button @click="show = !show">取消</button>
 			</li>
-		</ul>
-		
-		<table>
-			<tbody>
-				<tr>
-					<td>单据号</td>
-					<td>药品编码</td>
-					<td>采购价</td>
-					<td>采购数量</td>
-					<td>采购日期</td>
-					<td>供应商</td>
-				</tr>
-				<tr v-if="data" v-for="(item, index) in data">
-					<td>{{index+1}}</td>
-					<td>{{item.mednum}}</td>
-					<td>{{item.inPrice}}</td>
-					<td>{{item.inCount}}</td>
-					<td>{{item.inDate}}</td>
-					<td>{{item.provider}}</td>
-				</tr>
-			</tbody>
-		</table>
-		
+		</ul> -->
+		<el-table
+		    :data="tableData"
+		    stripe
+		    style="width: 100%">
+		    <el-table-column
+		      type="index"
+		      label="单据号"
+		      width="150"
+		      :index="indexMethod">
+		    </el-table-column>
+		    <el-table-column
+		      prop="mednum"
+		      label="药品编码"
+		      width="150">
+		    </el-table-column>
+		    <el-table-column
+		      prop="inPrice"
+		      label="采购价"
+		      width="150">
+		    </el-table-column>
+		    <el-table-column
+		      prop="inCount"
+		      label="采购数量"
+		      width="150">
+		    </el-table-column>
+		    <el-table-column
+		      prop="inDate"
+		      label="采购日期"
+		      width="150">
+		    </el-table-column>
+		    <el-table-column
+		      prop="provider"
+		      label="供应商"
+		      width="150">
+		    </el-table-column>
+		  </el-table>
 	</div>
 </template>
 <script>
@@ -67,6 +116,8 @@ export default {
   name: 'inMed',
   data () {
     return {
+    	labelPosition: 'right',
+    	tableData: [],
      	show:false,
      	showceng:false,
 		mednum:"",
@@ -91,11 +142,14 @@ export default {
 		var date = currTime.getDate();
 		var hour = currTime.getHours();
 		var minutes = currTime.getMinutes();
-		var seconds = currTime.getSeconds();
-		return `${year}年${month}月${date}日 ${hour}:${minutes}:${seconds}`;
+		return `${year}/${month}/${date} ${hour}:${minutes}`;
 	}
   },
   methods:{
+
+  	indexMethod(index) {
+  	  return index * 1 + 1;
+  	},
   	create:function(){
 		var that = this;
 		var data = {
@@ -117,13 +171,13 @@ export default {
 				}else{
 					alert(res.data);
 				}
-			})
+			})    
 		)
 	},
 	change:function(){
 		console.log(this.mednum);
 		var that = this;
-		this.$http.post('/haveMed/findOnly',{mednum:this.mednum}).then((res)=>{
+		this.$http.post('/haveMed/findmednum',{mednum:this.mednum}).then((res)=>{
 			if(res.data){
 				console.log(res)
 				that.medname = res.data[0].medname;
@@ -169,7 +223,7 @@ export default {
 		var that= this;
 		this.$http.get('/inMed/getIn').then((res)=>{
 			// console.log(res);
-			that.data = res.data
+			that.tableData = res.data
 		})
 	}
   },
@@ -179,9 +233,11 @@ export default {
 }	
 </script>
 <style scoped>
-table{
-	width: 900px;
+.el-table{
+	position: static !important;
+	width: 900px !important;
 	height: auto;
+	border-collapse:collapse;
 	margin: 20px auto;
 }
 tr{
@@ -196,22 +252,46 @@ tr td{
 	height: 40px;
 	text-align: center;
 	line-height: 40px;
+	border: 1px solid #ccc;
 }
-.inmed{
+.outmed{
 	width: 400px;
-	height: 445px;
-	background:#ccc;
+	height: 548px;
 	display: block;
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	margin-top: -200px;
+	margin-top: -274px;
 	margin-left: -200px;
 	list-style: none;
 	z-index: 666;
+	background: #fff;
+	border: 1px solid #ccc;
+}
+.el-form-item{
+	margin-top: 10px;
+	margin-bottom: 0;
+}
+.el-input{
+	width: 200px;
+}
+h3{
+	line-height: 45px;
+	font-weight: 100;
+	text-align: center;
 }
 
-li{
+.save,.quxiao{
+	display: inline-block;
+	width: 50px;
+	height: 30px;
+	border-radius: 5px;
+	margin-right: 10px;
+	padding:0;
+	
+
+}
+/*li{
 	width: 100%;
 	height: 40px;
 	text-align: center;
@@ -248,12 +328,13 @@ li>button{
 	margin-right: 10px;
 	
 
-}
+}*/
 .createMed{
 	width: 40px;
 	height: 40px;
 	display: block;
 	position: fixed;
+	padding: 0 !important;
 	top: 100px;
 	right: 10px;
 }

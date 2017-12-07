@@ -1,26 +1,40 @@
 <template>
-	<div class="haveMed">		
-		<table>
-			<tbody>
-				<tr>
-					<td>药品编码</td>
-					<td>药品名称</td>
-					<td>库存量</td>
-					<td>生产厂家</td>
-					<td>规格</td>
-					<td>零售价</td>
-				</tr>
-				<tr v-if="data" v-for="(item, index) in data">
-					<td>{{item.mednum}}</td>
-					<td>{{item.medname}}</td>
-					<td>{{item.haveCount}}</td>
-					<td>{{item.company}}</td>
-					<td>{{item.guige}}</td>
-					<td>{{item.havePrice}}</td>
-				</tr>
-			</tbody>
-		</table>
-		
+	<div class="haveMed">
+	<el-table
+	    :data="tableData"
+	    stripe
+	    style="width: 100%">
+	    <el-table-column
+	      prop="mednum"
+	      label="药品编码"
+	      width="150">
+	    </el-table-column>
+	    <el-table-column
+	      prop="medname"
+	      label="药品名称"
+	      width="150">
+	    </el-table-column>
+	    <el-table-column
+	      prop="haveCount"
+	      label="库存量"
+	      width="150">
+	    </el-table-column>
+	    <el-table-column
+	      prop="company"
+	      label="生产厂家"
+	      width="150">
+	    </el-table-column>
+	    <el-table-column
+	      prop="guige"
+	      label="规格"
+	      width="150">
+	    </el-table-column>
+	    <el-table-column
+	      prop="havePrice"
+	      label="零售价"
+	      width="150">
+	    </el-table-column>
+	  </el-table>			
 	</div>
 
 </template>
@@ -29,7 +43,8 @@ export default {
   name: 'haveMed',
   data () {
     return {
-		data:null
+		data:null,
+		tableData:[]
     }
   },
   computed:{
@@ -41,11 +56,14 @@ export default {
 	// }
   },
   methods:{
+  	indexMethod(index) {
+  	  return index * 1 + 1;
+  	},
 	getHaveMed:function(){
 		var that= this;
 		this.$http.get('/haveMed/getHave').then((res)=>{
 			console.log(res);
-			that.data = res.data
+			that.tableData = res.data
 		})
 	}             
   },
@@ -56,10 +74,11 @@ export default {
 }	
 </script>
 <style scoped>
-table{
-	width: 900px;
+.el-table{
+	position: static !important;
+	width: 900px !important;
 	height: auto;
-	
+	border-collapse:collapse;
 	margin: 20px auto;
 }
 tr{
@@ -74,6 +93,7 @@ tr td{
 	height: 40px;
 	text-align: center;
 	line-height: 40px;
+	border: 1px solid #ccc;
 }
 .outmed{
 	width: 400px;
